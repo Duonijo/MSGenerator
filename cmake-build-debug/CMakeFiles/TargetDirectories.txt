@@ -1,0 +1,3 @@
+/Users/admin/OPTA-LP/MSGenerator/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/admin/OPTA-LP/MSGenerator/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/admin/OPTA-LP/MSGenerator/cmake-build-debug/CMakeFiles/MSGenerator.dir
