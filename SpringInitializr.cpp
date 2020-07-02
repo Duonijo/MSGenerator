@@ -72,3 +72,7 @@ int SpringInitializr::getJavaVersion() const {
 void SpringInitializr::setJavaVersion(int javaVersion) {
     SpringInitializr::javaVersion = javaVersion;
 }
+
+std::string SpringInitializr::toString() const {
+    return std::string( "Object : " + this->getGroup() + " ; " + this->getArtifact());
+}

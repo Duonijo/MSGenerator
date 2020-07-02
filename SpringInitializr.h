@@ -8,6 +8,8 @@
 
 #include <string>
 
+
+
 class SpringInitializr {
 
 private:
@@ -18,8 +20,11 @@ private:
     std::string packageName;
     int javaVersion = 8;
 
+
 public:
     void downloadFile();
+
+    std::string toString() const;
 
     SpringInitializr();
 
@@ -54,6 +59,7 @@ public:
     int getJavaVersion() const;
 
     void setJavaVersion(int javaVersion);
+
 };
 
 
