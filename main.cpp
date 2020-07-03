@@ -2,6 +2,7 @@
 #include <curl/curl.h>
 #include <zlib.h>
 #include "SpringInitializr.h"
+#include<algorithm>
 
 static void show_usage(const std::string& name)
 {
@@ -63,13 +64,15 @@ int main(int argc, char *argv[]) {
     }
 
     springInitializr.downloadFile();
+    std::string art = springInitializr.getArtifact();
+    art.erase(remove(art.begin(), art.end(), '-'), art.end());
+    std::string initPackage = "cd src/main/java/com/"+springInitializr.getGroup()+"/"+art+" && mkdir {entities,repositories,services,models,controllers}";
 
-    std::string command = "mkdir " + springInitializr.getName() +
+    std::string unzip = "mkdir " + springInitializr.getName() +
             " && mv " + springInitializr.getName() + ".zip "  + springInitializr.getName() + " && cd " + springInitializr.getName() + " && unzip "+ springInitializr.getName() +".zip && rm "
-            + springInitializr.getName() + ".zip";
+            + springInitializr.getName() + ".zip && " + initPackage;
 
-    system(command.c_str());
-
+    system(unzip.c_str());
     std::cout << springInitializr.toString() << std::endl;
 
 

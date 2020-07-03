@@ -18,6 +18,13 @@ private:
     std::string name;
     std::string description;
     std::string packageName;
+    std::string destination;
+public:
+    const std::string &getDestination() const;
+
+    void setDestination(const std::string &destination);
+
+private:
     int javaVersion = 8;
 
     bool eureka{};

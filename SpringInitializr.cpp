@@ -17,7 +17,7 @@ void SpringInitializr::downloadFile() {
     FILE *pageFile;
 
     std::string url = "https://start.spring.io/starter.zip?"
-                        "groupId=" + this->getGroup() +
+                        "groupId=com." + this->getGroup() +
                         "&artifactId=" + this->getArtifact() +
                         "&dependencies=devtools,lombok,web";
     if(this->isEureka()){
@@ -118,4 +118,12 @@ void SpringInitializr::setZuul(bool zuul) {
 size_t SpringInitializr::write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     size_t written = fwrite(ptr, size, nmemb, stream);
     return written;
+}
+
+const std::string &SpringInitializr::getDestination() const {
+    return destination;
+}
+
+void SpringInitializr::setDestination(const std::string &destination) {
+    SpringInitializr::destination = destination;
 }
