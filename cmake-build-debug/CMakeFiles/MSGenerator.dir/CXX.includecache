@@ -11,14 +11,12 @@ SpringInitializr.h
 /Users/admin/OPTA-LP/MSGenerator/SpringInitializr.h
 utility
 -
+curl/curl.h
+-
+iostream
+-
 
 /Users/admin/OPTA-LP/MSGenerator/SpringInitializr.h
 string
 -
-
-/Users/admin/OPTA-LP/MSGenerator/main.cpp
-iostream
--
-SpringInitializr.h
-/Users/admin/OPTA-LP/MSGenerator/SpringInitializr.h
 

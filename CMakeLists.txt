@@ -2,5 +2,5 @@ cmake_minimum_required(VERSION 3.16)
 project(MSGenerator)
 
 set(CMAKE_CXX_STANDARD 14)
-
+set(CMAKE_CXX_FLAGS "-lcurl")
 add_executable(MSGenerator main.cpp SpringInitializr.cpp SpringInitializr.h)

@@ -20,6 +20,18 @@ private:
     std::string packageName;
     int javaVersion = 8;
 
+    bool eureka{};
+    bool zuul{};
+
+public:
+    bool isEureka() const;
+
+    void setEureka(bool eureka);
+
+    bool isZuul() const;
+
+    void setZuul(bool zuul);
+
 
 public:
     void downloadFile();
@@ -27,14 +39,6 @@ public:
     std::string toString() const;
 
     SpringInitializr();
-
-    SpringInitializr(const std::string &group, const std::string &artifact);
-
-    SpringInitializr(std::string group, std::string artifact, const std::string &name,
-                     std::string description, const std::string &packageName, int javaVersion);
-
-    SpringInitializr(std::string group, const std::string &artifact, std::string name,
-                     std::string packageName, int javaVersion);
 
     const std::string &getGroup() const;
 
@@ -59,6 +63,8 @@ public:
     int getJavaVersion() const;
 
     void setJavaVersion(int javaVersion);
+
+    static size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream);
 
 };
 

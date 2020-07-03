@@ -1,8 +1,8 @@
 #include <iostream>
+#include <curl/curl.h>
 #include "SpringInitializr.h"
 
 // #include libcurl here
-
 static void show_usage(const std::string& name)
 {
     std::cerr << "Usage: " << name << " <option(s)> SOURCES\n"
@@ -15,15 +15,21 @@ static void show_usage(const std::string& name)
               << std::endl;
 }
 
+static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) {
+    ((std::string*)userp)->append((char*)contents, size * nmemb);
+    return size * nmemb;
+}
+
+static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
+{
+    size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
+    return written;
+}
+
 int main(int argc, char *argv[]) {
 
-    std::string group;
-    std::string artifact;
-    std::string name;
-    std::string description;
-    std::string packageName;
-    bool isEurekaServer = false;
-    bool isZuulServer = false;
+    SpringInitializr springInitializr;
+
 
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
@@ -34,31 +40,31 @@ int main(int argc, char *argv[]) {
         }
         else if ( arg == "--group" || arg == "-g") {
             if (i + 1 < argc) {
-                group = argv[++i];
+                springInitializr.setGroup(argv[++i]);
             }
         }
         else if (arg == "--artifact" || arg == "-a") {
             if (i + 1 < argc) {
-                artifact = argv[++i];
+                springInitializr.setArtifact(argv[++i]);
             }
         }
         else if (arg == "--eureka" || arg == "-e") {
-            isEurekaServer = true;
+            springInitializr.setEureka(true);
         }
         else if (arg == "--zuul" || arg == "-z"){
-            isZuulServer = true;
+            springInitializr.setZuul(true);
+        }
+
+        else if (arg == "--name" || arg == "-n"){
+            if (i + 1 < argc) {
+                springInitializr.setName(argv[++i]);
+            }
         }
     }
-    SpringInitializr springInitializr(group, artifact);
 
-    //call libcurl to download project from Spring Initializr
+    springInitializr.downloadFile();
 
-    //add directories to our new project as entities, repositories . . .
     std::cout << springInitializr.toString() << std::endl;
-
-    /*std::cout << "Object : " << springInitializr.getGroup() << " ; " << springInitializr.getArtifact()
-            << " ; Eureka Server : " << isEurekaServer
-            << " ; Zuul Server : " << isZuulServer
-            << std::endl;*/
+    std::cout << "FINI" << std::endl;
     return 0;
 }
