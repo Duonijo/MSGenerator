@@ -1,8 +1,8 @@
 #include <iostream>
 #include <curl/curl.h>
+#include <zlib.h>
 #include "SpringInitializr.h"
 
-// #include libcurl here
 static void show_usage(const std::string& name)
 {
     std::cerr << "Usage: " << name << " <option(s)> SOURCES\n"
@@ -64,7 +64,15 @@ int main(int argc, char *argv[]) {
 
     springInitializr.downloadFile();
 
+    std::string command = "mkdir " + springInitializr.getName() +
+            " && mv " + springInitializr.getName() + ".zip "  + springInitializr.getName() + " && cd " + springInitializr.getName() + " && unzip "+ springInitializr.getName() +".zip && rm "
+            + springInitializr.getName() + ".zip";
+
+    system(command.c_str());
+
     std::cout << springInitializr.toString() << std::endl;
+
+
     std::cout << "FINI" << std::endl;
     return 0;
 }
