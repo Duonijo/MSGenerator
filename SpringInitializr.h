@@ -15,22 +15,27 @@ class SpringInitializr {
 private:
     std::string group;
     std::string artifact;
-    std::string name;
+    std::string projectName;
     std::string description;
     std::string packageName;
     std::string destination;
+
+    int javaVersion = 8;
+
+    bool eureka{};
+public:
+    const std::string &getProjectName() const;
+
+    void setProjectName(const std::string &projectName);
+
+private:
+    bool zuul{};
+
 public:
     const std::string &getDestination() const;
 
     void setDestination(const std::string &destination);
 
-private:
-    int javaVersion = 8;
-
-    bool eureka{};
-    bool zuul{};
-
-public:
     bool isEureka() const;
 
     void setEureka(bool eureka);
@@ -38,10 +43,6 @@ public:
     bool isZuul() const;
 
     void setZuul(bool zuul);
-
-
-public:
-    void downloadFile();
 
     std::string toString() const;
 
@@ -55,9 +56,6 @@ public:
 
     void setArtifact(const std::string &artifact);
 
-    const std::string &getName() const;
-
-    void setName(const std::string &name);
 
     const std::string &getDescription() const;
 
@@ -70,8 +68,6 @@ public:
     int getJavaVersion() const;
 
     void setJavaVersion(int javaVersion);
-
-    static size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream);
 
 };
 
