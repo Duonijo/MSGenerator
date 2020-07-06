@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/MSGenerator.dir/GenerateFiles.cpp.o"
   "CMakeFiles/MSGenerator.dir/SpringInitializr.cpp.o"
   "CMakeFiles/MSGenerator.dir/main.cpp.o"
   "MSGenerator"

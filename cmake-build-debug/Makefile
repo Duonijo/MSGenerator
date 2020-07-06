@@ -123,6 +123,33 @@ MSGenerator/fast:
 	$(MAKE) -f CMakeFiles/MSGenerator.dir/build.make CMakeFiles/MSGenerator.dir/build
 .PHONY : MSGenerator/fast
 
+GenerateFiles.o: GenerateFiles.cpp.o
+
+.PHONY : GenerateFiles.o
+
+# target to build an object file
+GenerateFiles.cpp.o:
+	$(MAKE) -f CMakeFiles/MSGenerator.dir/build.make CMakeFiles/MSGenerator.dir/GenerateFiles.cpp.o
+.PHONY : GenerateFiles.cpp.o
+
+GenerateFiles.i: GenerateFiles.cpp.i
+
+.PHONY : GenerateFiles.i
+
+# target to preprocess a source file
+GenerateFiles.cpp.i:
+	$(MAKE) -f CMakeFiles/MSGenerator.dir/build.make CMakeFiles/MSGenerator.dir/GenerateFiles.cpp.i
+.PHONY : GenerateFiles.cpp.i
+
+GenerateFiles.s: GenerateFiles.cpp.s
+
+.PHONY : GenerateFiles.s
+
+# target to generate assembly for a file
+GenerateFiles.cpp.s:
+	$(MAKE) -f CMakeFiles/MSGenerator.dir/build.make CMakeFiles/MSGenerator.dir/GenerateFiles.cpp.s
+.PHONY : GenerateFiles.cpp.s
+
 SpringInitializr.o: SpringInitializr.cpp.o
 
 .PHONY : SpringInitializr.o
@@ -186,6 +213,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... MSGenerator"
+	@echo "... GenerateFiles.o"
+	@echo "... GenerateFiles.i"
+	@echo "... GenerateFiles.s"
 	@echo "... SpringInitializr.o"
 	@echo "... SpringInitializr.i"
 	@echo "... SpringInitializr.s"

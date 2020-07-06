@@ -80,6 +80,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/admin/OPTA-LP/MSGenerator/GenerateFiles.cpp">
+			<Option target="MSGenerator"/>
+		</Unit>
+		<Unit filename="/Users/admin/OPTA-LP/MSGenerator/GenerateFiles.h">
+			<Option target="MSGenerator"/>
+		</Unit>
 		<Unit filename="/Users/admin/OPTA-LP/MSGenerator/SpringInitializr.cpp">
 			<Option target="MSGenerator"/>
 		</Unit>

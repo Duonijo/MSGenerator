@@ -3,4 +3,4 @@ project(MSGenerator)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "-lcurl")
-add_executable(MSGenerator main.cpp SpringInitializr.cpp SpringInitializr.h)
+add_executable(MSGenerator main.cpp SpringInitializr.cpp SpringInitializr.h GenerateFiles.cpp GenerateFiles.h)

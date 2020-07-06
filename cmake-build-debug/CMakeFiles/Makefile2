@@ -74,12 +74,12 @@ clean: CMakeFiles/MSGenerator.dir/clean
 CMakeFiles/MSGenerator.dir/all:
 	$(MAKE) -f CMakeFiles/MSGenerator.dir/build.make CMakeFiles/MSGenerator.dir/depend
 	$(MAKE) -f CMakeFiles/MSGenerator.dir/build.make CMakeFiles/MSGenerator.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/admin/OPTA-LP/MSGenerator/cmake-build-debug/CMakeFiles --progress-num=1,2,3 "Built target MSGenerator"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/admin/OPTA-LP/MSGenerator/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4 "Built target MSGenerator"
 .PHONY : CMakeFiles/MSGenerator.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/MSGenerator.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/admin/OPTA-LP/MSGenerator/cmake-build-debug/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/admin/OPTA-LP/MSGenerator/cmake-build-debug/CMakeFiles 4
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/MSGenerator.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/admin/OPTA-LP/MSGenerator/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/MSGenerator.dir/rule

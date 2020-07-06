@@ -1,49 +1,16 @@
 #include <iostream>
-#include <curl/curl.h>
-#include <zlib.h>
 #include "SpringInitializr.h"
 #include<algorithm>
 #include <sys/stat.h>
+#include <fstream>
+#include "GenerateFiles.h"
+
 
 
 static bool IsPathExist(const std::string &s)
 {
     struct stat buffer{};
     return (stat (s.c_str(), &buffer) == 0);
-}
-
-size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
-    size_t written = fwrite(ptr, size, nmemb, stream);
-    return written;
-}
-
-static void downloadFile( SpringInitializr *springInitializr) {
-    CURL *curl_handle;
-    char* projectName = const_cast<char *>(springInitializr->getArtifact().c_str());
-    std::string pageFilename = projectName;
-    pageFilename.append(".zip");
-
-
-    curl_global_init(CURL_GLOBAL_ALL);
-    curl_handle = curl_easy_init();
-    std::string url =
-            "https://start.spring.io/starter.zip?groupId=com." + springInitializr->getGroup() + "&artifactId=" +
-            springInitializr->getArtifact() + "&dependencies=devtools,lombok,web";
-    url.append(springInitializr->isEureka() ? ",cloud-eureka-server" : ",jpa,cloud-eureka");
-
-    curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1L);
-    curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
-    FILE *pageFile;
-    pageFile = fopen(pageFilename.c_str(), "wb");
-    if(pageFile) {
-        curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, pageFile);
-        curl_easy_perform(curl_handle);
-        fclose(pageFile);
-    }
-
-    curl_easy_cleanup(curl_handle);
-    curl_global_cleanup();
 }
 
 static void show_usage(const std::string& name)
@@ -103,7 +70,7 @@ int main(int argc, char *argv[]) {
     }
 
     if(!springInitializr.getDestination().empty()){
-        downloadFile(&springInitializr);
+        GenerateFiles::downloadFile(&springInitializr);
 
         std::string art = springInitializr.getArtifact();
         art.erase(remove(art.begin(), art.end(), '-'), art.end());
@@ -114,21 +81,32 @@ int main(int argc, char *argv[]) {
         }
 
         std::string filePath = springInitializr.getDestination() + "/" + springInitializr.getProjectName()+ "/"+ springInitializr.getArtifact();
-
-        if(IsPathExist(springInitializr.getProjectName())){
-            unzip = "mkdir -p "+  filePath +
-                    " && mv " + springInitializr.getArtifact() + ".zip "  + filePath + " && cd " + filePath + " && unzip -qq "+ springInitializr.getArtifact() +".zip && rm "
+        std::string app_path = springInitializr.getDestination()+ "/" + springInitializr.getProjectName()+"/"+ springInitializr.getArtifact() +
+                               "/src/main/java/com/"+springInitializr.getGroup()+"/"+art;
+        if (!IsPathExist(springInitializr.getProjectName())) {
+            unzip = "mkdir -p " + filePath +
+                    " && mv " + springInitializr.getArtifact() + ".zip " + filePath + " && cd " + filePath +
+                    " && unzip -qq " + springInitializr.getArtifact() + ".zip && rm "
                     + springInitializr.getArtifact() + ".zip && " + initPackage;
         } else {
             unzip = "mkdir -p " + filePath +
-                    " && mv " + springInitializr.getArtifact() + ".zip "  + filePath + " && cd " + filePath + " && unzip -qq "+ springInitializr.getArtifact() +".zip && rm "
+                    " && mv " + springInitializr.getArtifact() + ".zip " + filePath + " && cd " + filePath +
+                    " && unzip -qq " + springInitializr.getArtifact() + ".zip && rm "
                     + springInitializr.getArtifact() + ".zip && " + initPackage;
         }
         system(unzip.c_str());
+
+        if(springInitializr.isEureka()){
+            GenerateFiles::setApplicationProperties(springInitializr);
+            GenerateFiles::insertAnnotation(app_path, "DemoApplication", "@EnableEurekaServer\n@SpringBootApplication", springInitializr);
+        } else if(springInitializr.isZuul()){
+            GenerateFiles::insertAnnotation(app_path, "DemoApplication", "@SpringBootApplication\n@EnableEurekaClient\n@EnableZuulProxy", springInitializr);
+        } else {
+            GenerateFiles::insertAnnotation(app_path, "DemoApplication", "@SpringBootApplication\n@EnableEurekaClient\n", springInitializr);
+        }
         std::cout << "MICROSERVICE : " << springInitializr.getArtifact() << " has been create." << std::endl;
         return 0;
     }
-
     else {
         std::cout << "Specify destination" << std::endl;
         return 0;
