@@ -9,6 +9,7 @@
 #include <curl/curl.h>
 #include <vector>
 #include <filesystem>
+#include <sys/stat.h>
 
 
 size_t GenerateFiles::write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
@@ -171,7 +172,7 @@ std::vector<std::string> GenerateFiles::findMicroservicesInProject(SpringInitial
     std::string path =springInitializr.getDestination()+"/"+springInitializr.getProjectName()+"/";
     for (const auto & entry : std::__fs::filesystem::directory_iterator(path)){
         std::string ms = entry.path().generic_string().erase(0, path.length());
-        if(!((ms.find("eureka") != std::string::npos) || (ms.find("zuul") != std::string::npos))){
+        if(!((ms.find("eureka") != std::string::npos)||(ms.find("zuul") != std::string::npos))){
             microservices.push_back(ms);
         }
     }
@@ -187,5 +188,125 @@ void GenerateFiles::addPropertiesToZuul(SpringInitializr &springInitializr) {
     outfile.open(path, std::ios_base::app); // append instead of overwrite
     outfile << "zuul.routes." << ms << ".service-id = " << ms <<"\n"
                "zuul.routes." << ms << ".path = /" << ms.substr(ms.find(delimiter)+1, ms.length())<< "/**\n\n";
+}
+
+void GenerateFiles::generateMicroservice(SpringInitializr &springInitializr) {
+    downloadFile(&springInitializr);
+
+    std::string art = springInitializr.getArtifact();
+    art.erase(remove(art.begin(), art.end(), '-'), art.end());
+    std::string initPackage = "cd src/main/java/com/"+springInitializr.getGroup()+"/"+art+" && mkdir {entities,repositories,services,models,controllers}";
+    std::string unzip;
+    if(springInitializr.getProjectName().empty()){
+        springInitializr.setProjectName("Demo");
+    }
+
+    std::string filePath = springInitializr.getDestination() + "/" + springInitializr.getProjectName()+ "/"+ springInitializr.getArtifact();
+    std::string app_path = springInitializr.getDestination()+ "/" + springInitializr.getProjectName()+"/"+ springInitializr.getArtifact() +
+                           "/src/main/java/com/"+springInitializr.getGroup()+"/"+art;
+    if (!IsPathExist(springInitializr.getProjectName())) {
+        unzip = "mkdir -p " + filePath +
+                " && mv " + springInitializr.getArtifact() + ".zip " + filePath + " && cd " + filePath +
+                " && unzip -qq " + springInitializr.getArtifact() + ".zip && rm "
+                + springInitializr.getArtifact() + ".zip && " + initPackage;
+    } else {
+        unzip = "mkdir -p " + filePath +
+                " && mv " + springInitializr.getArtifact() + ".zip " + filePath + " && cd " + filePath +
+                " && unzip -qq " + springInitializr.getArtifact() + ".zip && rm "
+                + springInitializr.getArtifact() + ".zip && " + initPackage;
+    }
+    system(unzip.c_str());
+    GenerateFiles::setApplicationProperties(springInitializr);
+    if(springInitializr.isEureka()){
+        GenerateFiles::insertAnnotation(app_path, "DemoApplication", "@EnableEurekaServer\n@SpringBootApplication", springInitializr);
+    } else if(springInitializr.isZuul()){
+        GenerateFiles::insertAnnotation(app_path, "DemoApplication", "@SpringBootApplication\n@EnableEurekaClient\n@EnableZuulProxy", springInitializr);
+    } else {
+        GenerateFiles::insertAnnotation(app_path, "DemoApplication", "@SpringBootApplication\n@EnableEurekaClient\n", springInitializr);
+        GenerateFiles::addPropertiesToZuul(springInitializr);
+    }
+}
+
+bool GenerateFiles::IsPathExist(const std::string &s) {
+    struct stat buffer{};
+    return (stat (s.c_str(), &buffer) == 0);
+}
+
+void GenerateFiles::generateClasses(SpringInitializr &springInitializr) {
+    std::string art = springInitializr.getArtifact();
+    art.erase(remove(art.begin(), art.end(), '-'), art.end());
+    std::string path_entities = springInitializr.getDestination()+"/"+springInitializr.getProjectName()+"/"+springInitializr.getArtifact()+"/src/main/java/com/"+springInitializr.getGroup()+"/"+art+"/entities/";
+
+    bool createClasses = true;
+    std::string add;
+    while (createClasses){
+
+        std::string name;
+        std::string tableName;
+        std::string generateTableAnswer;
+        bool generateTable;
+
+        std::cout << "Add entities to project ? y / [n] \t";
+        std::cin >> add;
+        if( add == "y" || add == "yes" || add == "Y" || add == "YES"){
+            std::ofstream outfile;
+            std::cout << "Entity name : \t";
+            std::cin >> name;
+
+            std::cout << "Generate table ? : y / [n] \t";
+            std::cin >> generateTableAnswer;
+            generateTable = generateTableAnswer == "y" || generateTableAnswer == "yes" ||
+                            generateTableAnswer == "Y" || generateTableAnswer == "YES";
+
+            outfile.open(path_entities+name+".java", std::ofstream::binary);
+
+            if(generateTable){
+                std::cout << "Table name : \t";
+                std::cin >> tableName;
+
+                outfile << "package com."
+                << springInitializr.getGroup()<<"."<<art<<".entities;\n"
+                "\n"
+                "import lombok.AllArgsConstructor;\n"
+                "import lombok.Builder;\n"
+                "import lombok.Data;\n"
+                "import lombok.NoArgsConstructor;\n"
+                "\n"
+                "import javax.persistence.*;\n"
+                "\n"
+                "@Data\n"
+                "@Entity\n"
+                "@Table(name = \""<< tableName <<"\")\n"
+                "@AllArgsConstructor\n"
+                "@NoArgsConstructor\n"
+                "@Builder\n"
+                "public class "<< name << " {\n"
+                "\n"
+                "    @Id\n"
+                "    @GeneratedValue(strategy = GenerationType.IDENTITY)\n"
+                "    private Long id;\n\n"
+                "}";
+            } else {
+                outfile << "package com." << springInitializr.getGroup()<<"."<<art<<".entities;\n"
+                      "\n"
+                      "import lombok.AllArgsConstructor;\n"
+                      "import lombok.Builder;\n"
+                      "import lombok.Data;\n"
+                      "import lombok.NoArgsConstructor;\n"
+                      "\n"
+                      "@Data\n"
+                      "@AllArgsConstructor\n"
+                      "@NoArgsConstructor\n"
+                      "@Builder\n"
+                      "public class "<< name << " {\n""\n""}";
+            }
+
+            outfile.close();
+            std::cout << name << " created.\n\n";
+        } else {
+            createClasses = false;
+        }
+    }
+
 }
 

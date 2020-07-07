@@ -21,34 +21,16 @@ vector
 -
 filesystem
 -
+sys/stat.h
+-
 
 /Users/admin/OPTA-LP/MSGenerator/GenerateFiles.h
 algorithm
 -
 SpringInitializr.h
 /Users/admin/OPTA-LP/MSGenerator/SpringInitializr.h
-
-/Users/admin/OPTA-LP/MSGenerator/SpringInitializr.cpp
-SpringInitializr.h
-/Users/admin/OPTA-LP/MSGenerator/SpringInitializr.h
-utility
--
-curl/curl.h
--
 
 /Users/admin/OPTA-LP/MSGenerator/SpringInitializr.h
 string
 -
-
-/Users/admin/OPTA-LP/MSGenerator/main.cpp
-iostream
--
-SpringInitializr.h
-/Users/admin/OPTA-LP/MSGenerator/SpringInitializr.h
-algorithm
--
-sys/stat.h
--
-GenerateFiles.h
-/Users/admin/OPTA-LP/MSGenerator/GenerateFiles.h
 

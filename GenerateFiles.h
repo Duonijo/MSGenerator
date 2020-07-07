@@ -25,6 +25,14 @@ public:
     static std::vector<std::string> findMicroservicesInProject(SpringInitializr &springInitializr);
 
     static void addPropertiesToZuul(SpringInitializr &springInitializr);
+
+    static void generateMicroservice(SpringInitializr &springInitializr);
+
+    static void generateClasses(SpringInitializr &springInitializr);
+
+    static bool IsPathExist(const std::string &s);
+
+
 };
 
 

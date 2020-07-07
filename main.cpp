@@ -1,15 +1,8 @@
 #include <iostream>
 #include "SpringInitializr.h"
 #include<algorithm>
-#include <sys/stat.h>
 #include "GenerateFiles.h"
 
-
-static bool IsPathExist(const std::string &s)
-{
-    struct stat buffer{};
-    return (stat (s.c_str(), &buffer) == 0);
-}
 
 static void show_usage(const std::string& name)
 {
@@ -76,40 +69,9 @@ int main(int argc, char *argv[]) {
     }
 
     if(!springInitializr.getDestination().empty()){
-        GenerateFiles::downloadFile(&springInitializr);
+        GenerateFiles::generateMicroservice(springInitializr);
+        GenerateFiles::generateClasses(springInitializr);
 
-        std::string art = springInitializr.getArtifact();
-        art.erase(remove(art.begin(), art.end(), '-'), art.end());
-        std::string initPackage = "cd src/main/java/com/"+springInitializr.getGroup()+"/"+art+" && mkdir {entities,repositories,services,models,controllers}";
-        std::string unzip;
-        if(springInitializr.getProjectName().empty()){
-            springInitializr.setProjectName("Demo");
-        }
-
-        std::string filePath = springInitializr.getDestination() + "/" + springInitializr.getProjectName()+ "/"+ springInitializr.getArtifact();
-        std::string app_path = springInitializr.getDestination()+ "/" + springInitializr.getProjectName()+"/"+ springInitializr.getArtifact() +
-                               "/src/main/java/com/"+springInitializr.getGroup()+"/"+art;
-        if (!IsPathExist(springInitializr.getProjectName())) {
-            unzip = "mkdir -p " + filePath +
-                    " && mv " + springInitializr.getArtifact() + ".zip " + filePath + " && cd " + filePath +
-                    " && unzip -qq " + springInitializr.getArtifact() + ".zip && rm "
-                    + springInitializr.getArtifact() + ".zip && " + initPackage;
-        } else {
-            unzip = "mkdir -p " + filePath +
-                    " && mv " + springInitializr.getArtifact() + ".zip " + filePath + " && cd " + filePath +
-                    " && unzip -qq " + springInitializr.getArtifact() + ".zip && rm "
-                    + springInitializr.getArtifact() + ".zip && " + initPackage;
-        }
-        system(unzip.c_str());
-        GenerateFiles::setApplicationProperties(springInitializr);
-        if(springInitializr.isEureka()){
-            GenerateFiles::insertAnnotation(app_path, "DemoApplication", "@EnableEurekaServer\n@SpringBootApplication", springInitializr);
-        } else if(springInitializr.isZuul()){
-            GenerateFiles::insertAnnotation(app_path, "DemoApplication", "@SpringBootApplication\n@EnableEurekaClient\n@EnableZuulProxy", springInitializr);
-        } else {
-            GenerateFiles::insertAnnotation(app_path, "DemoApplication", "@SpringBootApplication\n@EnableEurekaClient\n", springInitializr);
-            GenerateFiles::addPropertiesToZuul(springInitializr);
-        }
         std::cout << "MICROSERVICE : " << springInitializr.getArtifact() << " has been create." << std::endl;
         return 0;
     }
