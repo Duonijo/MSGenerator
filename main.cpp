@@ -2,9 +2,7 @@
 #include "SpringInitializr.h"
 #include<algorithm>
 #include <sys/stat.h>
-#include <fstream>
 #include "GenerateFiles.h"
-
 
 
 static bool IsPathExist(const std::string &s)
@@ -23,6 +21,8 @@ static void show_usage(const std::string& name)
               << "\t-a,--artifact\t\tSpecify the artifact name\n"
               << "\t-e,--eureka\t\tSpecify if micro service is Eureka Server\n"
               << "\t-z,--zuul\t\tSpecify if micro service is Zuul Server\n"
+              << "\t-u,--update\t\tUpdate Zuul properties\n"
+              <<"\n\nDatabases properties are set by Default with MariaDB\n"
               << std::endl;
 }
 
@@ -67,6 +67,12 @@ int main(int argc, char *argv[]) {
                 springInitializr.setDestination(argv[++i]);
             }
         }
+
+        else if (arg == "--update" || arg == "-u"){
+            if (i + 1 < argc) {
+                springInitializr.setZuulPath(argv[++i]);
+            }
+        }
     }
 
     if(!springInitializr.getDestination().empty()){
@@ -95,14 +101,14 @@ int main(int argc, char *argv[]) {
                     + springInitializr.getArtifact() + ".zip && " + initPackage;
         }
         system(unzip.c_str());
-
+        GenerateFiles::setApplicationProperties(springInitializr);
         if(springInitializr.isEureka()){
-            GenerateFiles::setApplicationProperties(springInitializr);
             GenerateFiles::insertAnnotation(app_path, "DemoApplication", "@EnableEurekaServer\n@SpringBootApplication", springInitializr);
         } else if(springInitializr.isZuul()){
             GenerateFiles::insertAnnotation(app_path, "DemoApplication", "@SpringBootApplication\n@EnableEurekaClient\n@EnableZuulProxy", springInitializr);
         } else {
             GenerateFiles::insertAnnotation(app_path, "DemoApplication", "@SpringBootApplication\n@EnableEurekaClient\n", springInitializr);
+            GenerateFiles::addPropertiesToZuul(springInitializr);
         }
         std::cout << "MICROSERVICE : " << springInitializr.getArtifact() << " has been create." << std::endl;
         return 0;

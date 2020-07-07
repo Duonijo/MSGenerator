@@ -20,18 +20,24 @@ private:
     std::string packageName;
     std::string destination;
 
+    std::string zuulPath;
+public:
+    const std::string &getZuulPath() const;
+
+    void setZuulPath(const std::string &zuulPath);
+
+private:
+
     int javaVersion = 8;
 
     bool eureka{};
+    bool zuul{};
+
 public:
     const std::string &getProjectName() const;
 
     void setProjectName(const std::string &projectName);
 
-private:
-    bool zuul{};
-
-public:
     const std::string &getDestination() const;
 
     void setDestination(const std::string &destination);

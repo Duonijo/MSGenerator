@@ -21,6 +21,10 @@ public:
     static void insertImport(SpringInitializr &springInitializr, std::string &strTemp);
 
     static void setApplicationProperties(SpringInitializr &springInitializr);
+
+    static std::vector<std::string> findMicroservicesInProject(SpringInitializr &springInitializr);
+
+    static void addPropertiesToZuul(SpringInitializr &springInitializr);
 };
 
 

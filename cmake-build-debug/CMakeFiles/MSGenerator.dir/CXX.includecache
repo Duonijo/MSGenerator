@@ -17,12 +17,24 @@ iostream
 -
 curl/curl.h
 -
+vector
+-
+filesystem
+-
 
 /Users/admin/OPTA-LP/MSGenerator/GenerateFiles.h
 algorithm
 -
 SpringInitializr.h
 /Users/admin/OPTA-LP/MSGenerator/SpringInitializr.h
+
+/Users/admin/OPTA-LP/MSGenerator/SpringInitializr.cpp
+SpringInitializr.h
+/Users/admin/OPTA-LP/MSGenerator/SpringInitializr.h
+utility
+-
+curl/curl.h
+-
 
 /Users/admin/OPTA-LP/MSGenerator/SpringInitializr.h
 string
@@ -36,8 +48,6 @@ SpringInitializr.h
 algorithm
 -
 sys/stat.h
--
-fstream
 -
 GenerateFiles.h
 /Users/admin/OPTA-LP/MSGenerator/GenerateFiles.h

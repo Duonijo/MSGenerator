@@ -6,7 +6,6 @@
 
 #include <utility>
 #include <curl/curl.h>
-#include <iostream>
 
 SpringInitializr::SpringInitializr() = default;
 
@@ -88,4 +87,12 @@ const std::string &SpringInitializr::getProjectName() const {
 
 void SpringInitializr::setProjectName(const std::string &projectName) {
     SpringInitializr::projectName = projectName;
+}
+
+const std::string &SpringInitializr::getZuulPath() const {
+    return zuulPath;
+}
+
+void SpringInitializr::setZuulPath(const std::string &zuulPath) {
+    SpringInitializr::zuulPath = zuulPath;
 }

@@ -7,6 +7,9 @@
 #include <fstream>
 #include <iostream>
 #include <curl/curl.h>
+#include <vector>
+#include <filesystem>
+
 
 size_t GenerateFiles::write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     size_t written = fwrite(ptr, size, nmemb, stream);
@@ -129,6 +132,60 @@ void GenerateFiles::setApplicationProperties(SpringInitializr &springInitializr)
         outfile << "server.port = 8761\n";
         outfile << "eureka.client.register-with-eureka = false\n";
         outfile << "eureka.client.fetch-registry = false\n";
+    } else if (springInitializr.isZuul()){
+        std::string delimiter = "-";
+        std::vector<std::string> microservices = findMicroservicesInProject(springInitializr);
+        outfile << "server.port=  8762\n"
+                   "spring.application.name = zuul-server\n"
+                   "eureka.client.service-url.default-zone = http://localhost:8761/eureka/\n"
+                   "zuul.ignored-services=*\n"
+                   "\n"
+                   "\n"
+                   "zuul.ribbon.eager-load.enabled= true\n"
+                   "ribbon.ReadTimeout=60000"
+                   "\n"
+                   "\n";
+        for(const std::string &ms : microservices){
+            outfile << "zuul.routes." << ms << ".service-id = " <<ms <<"\n"
+                       "zuul.routes." << ms << ".path = /" << ms.substr(ms.find(delimiter)+1, ms.length())<< "/**\n\n";
+        }
     }
 
+    else {
+        outfile << "spring.application.name = "+ springInitializr.getArtifact()+"\neureka.client.serviceUrl.defaultZone = http://localhost:8761/eureka\nserver.port = ";
+        outfile << "spring.datasource.url=jdbc:mariadb://localhost:3306/\n"
+                   "spring.datasource.username=\n"
+                   "spring.datasource.password=\n"
+                   "spring.datasource.driver-class-name=org.mariadb.jdbc.Driver\n";
+        outfile << "spring.jpa.show-sql=true\n"
+                   "spring.jpa.hibernate.ddl-auto=update\n"
+                   "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MariaDB103Dialect\n"
+                   "spring.jpa.hibernate.naming.implicit-strategy=org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl\n"
+                   "spring.jpa.hibernate.naming.physical-strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy\n"
+                   "spring.jpa.open-in-view=false";
+    }
 }
+
+std::vector<std::string> GenerateFiles::findMicroservicesInProject(SpringInitializr &springInitializr) {
+    std::vector<std::string> microservices;
+    std::string path =springInitializr.getDestination()+"/"+springInitializr.getProjectName()+"/";
+    for (const auto & entry : std::__fs::filesystem::directory_iterator(path)){
+        std::string ms = entry.path().generic_string().erase(0, path.length());
+        if(!((ms.find("eureka") != std::string::npos) || (ms.find("zuul") != std::string::npos))){
+            microservices.push_back(ms);
+        }
+    }
+    return microservices;
+}
+
+void GenerateFiles::addPropertiesToZuul(SpringInitializr &springInitializr) {
+    std::string delimiter = "-";
+    const std::string& ms = springInitializr.getArtifact();
+    std::string path = springInitializr.getDestination()+"/"+springInitializr.getProjectName()+"/"+springInitializr.getZuulPath() + "/" + "src/main/resources/application.properties";
+    std::ofstream outfile;
+
+    outfile.open(path, std::ios_base::app); // append instead of overwrite
+    outfile << "zuul.routes." << ms << ".service-id = " << ms <<"\n"
+               "zuul.routes." << ms << ".path = /" << ms.substr(ms.find(delimiter)+1, ms.length())<< "/**\n\n";
+}
+
