@@ -8,9 +8,8 @@
 #include <iostream>
 #include <curl/curl.h>
 #include <vector>
-#include <filesystem>
 #include <sys/stat.h>
-
+#include <filesystem>
 
 size_t GenerateFiles::writeData(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     size_t written = fwrite(ptr, size, nmemb, stream);
@@ -170,7 +169,7 @@ void GenerateFiles::setApplicationProperties(SpringInitializr &springInitializr)
 std::vector<std::string> GenerateFiles::findMicroservicesInProject(SpringInitializr &springInitializr) {
     std::vector<std::string> microservices;
     std::string path =springInitializr.getDestination()+"/"+springInitializr.getProjectName()+"/";
-    for (const auto & entry : std::__fs::filesystem::directory_iterator(path)){
+    for (const auto & entry : std::filesystem::directory_iterator(path)){
         std::string ms = entry.path().generic_string().erase(0, path.length());
         if(!((ms.find("eureka") != std::string::npos)||(ms.find("zuul") != std::string::npos))){
             microservices.push_back(ms);

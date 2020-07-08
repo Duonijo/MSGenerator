@@ -28,7 +28,7 @@ configure_file (
         "${PROJECT_BINARY_DIR}/MSGeneratorConfig.h"
 )
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-lcurl")
 add_executable(MSGenerator main.cpp SpringInitializr.cpp SpringInitializr.h GenerateFiles.cpp GenerateFiles.h)
 
