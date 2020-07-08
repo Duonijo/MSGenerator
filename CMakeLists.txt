@@ -30,6 +30,13 @@ configure_file (
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-lcurl")
+set(CURL_LIBRARY "-lcurl")
+find_package(CURL REQUIRED)
+include_directories(${CURL_INCLUDE_DIR})
+
+if(LIBCURL_ENABLE)
+    target_link_libraries(app ${CURL_LIBRARIES})
+endif()
 add_executable(MSGenerator main.cpp SpringInitializr.cpp SpringInitializr.h GenerateFiles.cpp GenerateFiles.h)
 
 # Set installation directory
