@@ -33,6 +33,8 @@ public:
 
     static bool IsPathExist(const std::string &s);
 
+    static void generatePackages(SpringInitializr &springInitializr);
+
 
 };
 

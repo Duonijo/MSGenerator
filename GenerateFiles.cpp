@@ -193,7 +193,6 @@ void GenerateFiles::generateMicroservice(SpringInitializr &springInitializr) {
 
     std::string art = springInitializr.getArtifact();
     art.erase(remove(art.begin(), art.end(), '-'), art.end());
-    std::string initPackage = "cd src/main/java/com/"+springInitializr.getGroup()+"/"+art+" && mkdir {entities,repositories,services,models,controllers}";
     std::string unzip;
     if(springInitializr.getProjectName().empty()){
         springInitializr.setProjectName("Demo");
@@ -208,13 +207,14 @@ void GenerateFiles::generateMicroservice(SpringInitializr &springInitializr) {
     if (!IsPathExist(springInitializr.getProjectName())) {
         unzip = "cd " + filePath +
                 " && unzip -qq " + springInitializr.getArtifact() + ".zip && rm "
-                + springInitializr.getArtifact() + ".zip && " + initPackage;
+                + springInitializr.getArtifact() + ".zip";
     } else {
         unzip = "cd " + filePath +
                 " && unzip -qq " + springInitializr.getArtifact() + ".zip && rm "
-                + springInitializr.getArtifact() + ".zip && " + initPackage;
+                + springInitializr.getArtifact() + ".zip";
     }
     system(unzip.c_str());
+    generatePackages(springInitializr);
     GenerateFiles::setApplicationProperties(springInitializr);
     if(springInitializr.isEureka()){
         GenerateFiles::insertAnnotation(app_path, "DemoApplication", "@EnableEurekaServer\n@SpringBootApplication", springInitializr);
@@ -305,6 +305,18 @@ void GenerateFiles::generateClasses(SpringInitializr &springInitializr) {
         } else {
             createClasses = false;
         }
+    }
+
+}
+
+void GenerateFiles::generatePackages(SpringInitializr &springInitializr) {
+    std::string art = springInitializr.getArtifact();
+    art.erase(remove(art.begin(), art.end(), '-'), art.end());
+    std::string path = springInitializr.getDestination()+"/"+springInitializr.getProjectName()+"/"+springInitializr.getArtifact()+"/"+"src/main/java/com/"+springInitializr.getGroup()+"/"+art+"/";
+    std::vector<std::string> packages{ "entities", "controllers", "services", "repositories", "models" };
+
+    for(std::string &package : packages){
+        std::filesystem::create_directories((path+package).c_str());
     }
 
 }
