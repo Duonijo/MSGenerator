@@ -5,6 +5,7 @@
 #ifndef MSGENERATOR_GENERATEFILES_H
 #define MSGENERATOR_GENERATEFILES_H
 #include<algorithm>
+#include <vector>
 #include "SpringInitializr.h"
 
 
