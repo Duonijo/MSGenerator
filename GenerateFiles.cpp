@@ -202,7 +202,8 @@ void GenerateFiles::generateMicroservice(SpringInitializr &springInitializr) {
     std::string filePath = springInitializr.getDestination() + "/" + springInitializr.getProjectName()+ "/"+ springInitializr.getArtifact();
     std::string app_path = springInitializr.getDestination()+ "/" + springInitializr.getProjectName()+"/"+ springInitializr.getArtifact() +
                            "/src/main/java/com/"+springInitializr.getGroup()+"/"+art;
-    mkdir(filePath.c_str(), 0777);
+    int success = mkdir(filePath.c_str(), 0777);
+    std::cout << "success : "<<success<<std::endl;
     downloadFile(&springInitializr);
 
     if (!IsPathExist(springInitializr.getProjectName())) {
