@@ -97,7 +97,7 @@ void GenerateFiles::downloadFile(SpringInitializr *springInitializr) {
     curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1L);
     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, writeData);
     FILE *pageFile;
-    pageFile = fopen((springInitializr->getDestination()+"/"+pageFilename).c_str(), "wb");
+    pageFile = fopen((springInitializr->getDestination()+"/"+ springInitializr->getProjectName()+"/"+springInitializr->getArtifact()+"/"+pageFilename).c_str(), "wb");
     if(pageFile) {
         curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, pageFile);
         curl_easy_perform(curl_handle);
@@ -190,7 +190,6 @@ void GenerateFiles::addPropertiesToZuul(SpringInitializr &springInitializr) {
 }
 
 void GenerateFiles::generateMicroservice(SpringInitializr &springInitializr) {
-    downloadFile(&springInitializr);
 
     std::string art = springInitializr.getArtifact();
     art.erase(remove(art.begin(), art.end(), '-'), art.end());
@@ -204,6 +203,7 @@ void GenerateFiles::generateMicroservice(SpringInitializr &springInitializr) {
     std::string app_path = springInitializr.getDestination()+ "/" + springInitializr.getProjectName()+"/"+ springInitializr.getArtifact() +
                            "/src/main/java/com/"+springInitializr.getGroup()+"/"+art;
     mkdir(filePath.c_str(), 0777);
+    downloadFile(&springInitializr);
 
     if (!IsPathExist(springInitializr.getProjectName())) {
         unzip = "cd " + filePath +
