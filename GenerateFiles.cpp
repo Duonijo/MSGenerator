@@ -12,7 +12,7 @@
 #include <sys/stat.h>
 
 
-size_t GenerateFiles::write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
+size_t GenerateFiles::writeData(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     size_t written = fwrite(ptr, size, nmemb, stream);
     return written;
 }
@@ -96,7 +96,7 @@ void GenerateFiles::downloadFile(SpringInitializr *springInitializr) {
 
     curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1L);
-    curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
+    curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, writeData);
     FILE *pageFile;
     pageFile = fopen(pageFilename.c_str(), "wb");
     if(pageFile) {
@@ -204,14 +204,14 @@ void GenerateFiles::generateMicroservice(SpringInitializr &springInitializr) {
     std::string filePath = springInitializr.getDestination() + "/" + springInitializr.getProjectName()+ "/"+ springInitializr.getArtifact();
     std::string app_path = springInitializr.getDestination()+ "/" + springInitializr.getProjectName()+"/"+ springInitializr.getArtifact() +
                            "/src/main/java/com/"+springInitializr.getGroup()+"/"+art;
+    mkdir(filePath.c_str(), 0777);
+
     if (!IsPathExist(springInitializr.getProjectName())) {
-        unzip = "mkdir -p " + filePath +
-                " && mv " + springInitializr.getArtifact() + ".zip " + filePath + " && cd " + filePath +
+        unzip = "mv " + springInitializr.getArtifact() + ".zip " + filePath + " && cd " + filePath +
                 " && unzip -qq " + springInitializr.getArtifact() + ".zip && rm "
                 + springInitializr.getArtifact() + ".zip && " + initPackage;
     } else {
-        unzip = "mkdir -p " + filePath +
-                " && mv " + springInitializr.getArtifact() + ".zip " + filePath + " && cd " + filePath +
+        unzip = "mv " + springInitializr.getArtifact() + ".zip " + filePath + " && cd " + filePath +
                 " && unzip -qq " + springInitializr.getArtifact() + ".zip && rm "
                 + springInitializr.getArtifact() + ".zip && " + initPackage;
     }

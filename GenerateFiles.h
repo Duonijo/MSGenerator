@@ -10,7 +10,7 @@
 
 class GenerateFiles {
 public:
-    static size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream);
+    static size_t writeData(void *ptr, size_t size, size_t nmemb, FILE *stream);
 
     static void insertAnnotation(const std::string &path, const std::string &name, const std::string &annotations, SpringInitializr &springInitializr);
 
