@@ -35,7 +35,7 @@ find_package(CURL REQUIRED)
 include_directories(${CURL_INCLUDE_DIR})
 
 if(LIBCURL_ENABLE)
-    target_link_libraries(app ${CURL_LIBRARIES})
+    target_link_libraries(${CURL_LIBRARIES})
 endif()
 add_executable(MSGenerator main.cpp SpringInitializr.cpp SpringInitializr.h GenerateFiles.cpp GenerateFiles.h)
 

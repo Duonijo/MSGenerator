@@ -97,7 +97,7 @@ void GenerateFiles::downloadFile(SpringInitializr *springInitializr) {
     curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1L);
     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, writeData);
     FILE *pageFile;
-    pageFile = fopen(pageFilename.c_str(), "wb");
+    pageFile = fopen((springInitializr->getDestination()+"/"+pageFilename).c_str(), "wb");
     if(pageFile) {
         curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, pageFile);
         curl_easy_perform(curl_handle);
@@ -206,11 +206,11 @@ void GenerateFiles::generateMicroservice(SpringInitializr &springInitializr) {
     mkdir(filePath.c_str(), 0777);
 
     if (!IsPathExist(springInitializr.getProjectName())) {
-        unzip = "mv " + springInitializr.getArtifact() + ".zip " + filePath + " && cd " + filePath +
+        unzip = "cd " + filePath +
                 " && unzip -qq " + springInitializr.getArtifact() + ".zip && rm "
                 + springInitializr.getArtifact() + ".zip && " + initPackage;
     } else {
-        unzip = "mv " + springInitializr.getArtifact() + ".zip " + filePath + " && cd " + filePath +
+        unzip = "cd " + filePath +
                 " && unzip -qq " + springInitializr.getArtifact() + ".zip && rm "
                 + springInitializr.getArtifact() + ".zip && " + initPackage;
     }
